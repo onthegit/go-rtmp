@@ -131,7 +131,8 @@ func (m *DataMessage) TypeID() TypeID {
 	case EncodingTypeAMF0:
 		return TypeIDDataMessageAMF0
 	default:
-		panic("Unreachable")
+		// panic("Unreachable")
+		return 0
 	}
 }
 
@@ -170,7 +171,8 @@ func (m *CommandMessage) TypeID() TypeID {
 	case EncodingTypeAMF0:
 		return TypeIDCommandMessageAMF0
 	default:
-		panic("Unreachable")
+		// panic("Unreachable")
+		return 0
 	}
 }
 

@@ -9,6 +9,7 @@ package message
 
 import (
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"io"
 )
@@ -149,6 +150,10 @@ func (enc *Encoder) encodeSharedObjectMessageAMF3(m *SharedObjectMessageAMF3) er
 func (enc *Encoder) encodeDataMessage(m *DataMessage) error {
 	e := NewAMFEncoder(enc.w, m.Encoding)
 
+	if e == nil {
+		return errors.New("amf encoder not found")
+	}
+
 	if err := e.Encode(m.Name); err != nil {
 		return err
 	}
@@ -166,6 +171,10 @@ func (enc *Encoder) encodeSharedObjectMessageAMF0(m *SharedObjectMessageAMF0) er
 
 func (enc *Encoder) encodeCommandMessage(m *CommandMessage) error {
 	e := NewAMFEncoder(enc.w, m.Encoding)
+
+	if e == nil {
+		return errors.New("amf encoder not found")
+	}
 
 	if err := e.Encode(m.CommandName); err != nil {
 		return err

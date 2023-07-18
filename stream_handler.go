@@ -121,7 +121,7 @@ func (h *streamHandler) ChangeState(state streamState) {
 		// 	case streamStateClientConnected:
 		// 		h.handler = &serverControlConnectedHandler{sh: h}
 	default:
-		panic("Unexpected")
+		return
 	}
 	h.state = state
 
@@ -153,6 +153,11 @@ func (h *streamHandler) handleData(
 	bodyDecoder := message.DataBodyDecoderFor(dataMsg.Name)
 
 	amfDec := message.NewAMFDecoder(dataMsg.Body, dataMsg.Encoding)
+
+	if amfDec == nil {
+		return errors.New("amf decoder not found")
+	}
+
 	var value message.AMFConvertible
 	if err := bodyDecoder(dataMsg.Body, amfDec, &value); err != nil {
 		return err
@@ -191,6 +196,11 @@ func (h *streamHandler) handleCommand(
 	}
 
 	amfDec := message.NewAMFDecoder(cmdMsg.Body, cmdMsg.Encoding)
+
+	if amfDec == nil {
+		return errors.New("amf decoder not found")
+	}
+
 	bodyDecoder := message.CmdBodyDecoderFor(cmdMsg.CommandName, cmdMsg.TransactionID)
 
 	var value message.AMFConvertible

@@ -33,11 +33,13 @@ type AMFDecoder interface {
 func NewAMFDecoder(r io.Reader, encTy EncodingType) AMFDecoder {
 	switch encTy {
 	case EncodingTypeAMF3:
-		panic("Unsupported encoding: AMF3")
+		// panic("Unsupported encoding: AMF3")
+		return nil
 	case EncodingTypeAMF0:
 		return amf0.NewDecoder(r)
 	default:
-		panic("Unreachable")
+		// panic("Unreachable")
+		return nil
 	}
 }
 
@@ -49,10 +51,12 @@ type AMFEncoder interface {
 func NewAMFEncoder(w io.Writer, encTy EncodingType) AMFEncoder {
 	switch encTy {
 	case EncodingTypeAMF3:
-		panic("Unsupported encoding: AMF3")
+		// panic("Unsupported encoding: AMF3")
+		return nil
 	case EncodingTypeAMF0:
 		return amf0.NewEncoder(w)
 	default:
-		panic("Unreachable")
+		// panic("Unreachable")
+		return nil
 	}
 }

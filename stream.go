@@ -93,6 +93,10 @@ func (s *Stream) Connect(
 	case <-t.doneCh:
 		amfDec := message.NewAMFDecoder(t.body, t.encoding)
 
+		if amfDec == nil {
+			return nil, errors.New("amf decoder not found")
+		}
+
 		var value message.AMFConvertible
 		if err := message.DecodeBodyConnectResult(t.body, amfDec, &value); err != nil {
 			return nil, errors.Wrap(err, "Failed to decode result")
@@ -173,6 +177,10 @@ func (s *Stream) CreateStream(body *message.NetConnectionCreateStream, chunkSize
 		return nil, timeoutCtx.Err()
 	case <-t.doneCh:
 		amfDec := message.NewAMFDecoder(t.body, t.encoding)
+
+		if amfDec == nil {
+			return nil, errors.New("amf decoder not found")
+		}
 
 		var value message.AMFConvertible
 		if err := message.DecodeBodyCreateStreamResult(t.body, amfDec, &value); err != nil {
@@ -274,6 +282,11 @@ func (s *Stream) writeCommandMessage(
 ) error {
 	buf := new(bytes.Buffer)
 	amfEnc := message.NewAMFEncoder(buf, s.encTy)
+
+	if amfEnc == nil {
+		return errors.New("amf encoder not found")
+	}
+
 	if err := message.EncodeBodyAnyValues(amfEnc, body); err != nil {
 		return err
 	}
@@ -294,6 +307,11 @@ func (s *Stream) WriteDataMessage(
 ) error {
 	buf := new(bytes.Buffer)
 	amfEnc := message.NewAMFEncoder(buf, message.EncodingTypeAMF0)
+
+	if amfEnc == nil {
+		return errors.New("amf encoder not found")
+	}
+
 	if err := message.EncodeBodyAnyValues(amfEnc, body); err != nil {
 		return err
 	}

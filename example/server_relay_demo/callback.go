@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 
+	"github.com/pkg/errors"
 	flvtag "github.com/yutopp/go-flv/tag"
 	"github.com/yutopp/go-rtmp"
 	rtmpmsg "github.com/yutopp/go-rtmp/message"
@@ -61,6 +62,11 @@ func onEventCallback(conn *rtmp.Conn, streamID uint32) func(flv *flvtag.FlvTag) 
 			// TODO: hide these implementation
 			amdBuf := new(bytes.Buffer)
 			amfEnc := rtmpmsg.NewAMFEncoder(amdBuf, rtmpmsg.EncodingTypeAMF0)
+
+			if amfEnc == nil {
+				return errors.New("amf encoder not found")
+			}
+
 			if err := rtmpmsg.EncodeBodyAnyValues(amfEnc, &rtmpmsg.NetStreamSetDataFrame{
 				Payload: buf.Bytes(),
 			}); err != nil {
