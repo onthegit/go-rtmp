@@ -1,6 +1,6 @@
-module github.com/onthegit/go-rtmp
+module github.com/yutopp/go-rtmp
 
-go 1.13
+go 1.14
 
 require (
 	github.com/fortytw2/leaktest v1.2.0
