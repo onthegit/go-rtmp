@@ -49,7 +49,14 @@ func (sc *serverConn) Serve() error {
 		sc.conn.handler.OnServe(sc.conn)
 	}
 
-	return sc.conn.handleMessageLoop()
+	err = sc.conn.handleMessageLoop()
+
+	if err != nil {
+		if sc.conn.handler != nil {
+			return sc.conn.handler.OnError(err)
+		}
+	}
+	return err
 }
 
 func (sc *serverConn) Close() error {
