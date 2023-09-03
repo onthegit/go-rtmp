@@ -145,10 +145,20 @@ func (c *Conn) handleMessageLoop() (err error) {
 				errTmp = errors.Errorf("Panic: %+v", r)
 			}
 			err = errors.WithStack(errTmp)
+
+			if c != nil && c.handler != nil {
+				c.handler.OnError(err)
+			}
 		}
 	}()
 
-	return c.runHandleMessageLoop()
+	err = c.runHandleMessageLoop()
+	if err != nil {
+		if c.handler != nil {
+			return c.handler.OnError(err)
+		}
+	}
+	return
 }
 
 func (c *Conn) runHandleMessageLoop() error {

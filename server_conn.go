@@ -28,11 +28,17 @@ func (sc *serverConn) Serve() error {
 	if err := handshake.HandshakeWithClient(sc.conn.rwc, sc.conn.rwc, &handshake.Config{
 		SkipHandshakeVerification: sc.conn.config.SkipHandshakeVerification,
 	}); err != nil {
+		if sc.conn.handler != nil {
+			return sc.conn.handler.OnError(errors.Wrap(err, "Failed to handshake"))
+		}
 		return errors.Wrap(err, "Failed to handshake")
 	}
 
 	ctrlStream, err := sc.conn.streams.Create(ControlStreamID)
 	if err != nil {
+		if sc.conn.handler != nil {
+			return sc.conn.handler.OnError(errors.Wrap(err, "Failed to create control stream"))
+		}
 		return errors.Wrap(err, "Failed to create control stream")
 	}
 	ctrlStream.handler.ChangeState(streamStateServerNotConnected)
