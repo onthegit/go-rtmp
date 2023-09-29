@@ -18,7 +18,7 @@ const ControlStreamID = 0
 
 type streams struct {
 	streams map[uint32]*Stream
-	m       sync.Mutex
+	m       *sync.RWMutex
 
 	conn *Conn
 }
@@ -26,8 +26,8 @@ type streams struct {
 func newStreams(conn *Conn) *streams {
 	return &streams{
 		streams: make(map[uint32]*Stream),
-
-		conn: conn,
+		m:       new(sync.RWMutex),
+		conn:    conn,
 	}
 }
 
@@ -83,6 +83,9 @@ func (ss *streams) Delete(streamID uint32) error {
 }
 
 func (ss *streams) At(streamID uint32) (*Stream, error) {
+	ss.m.RLock()
+	defer ss.m.RUnlock()
+
 	stream, ok := ss.streams[streamID]
 	if !ok {
 		return nil, errors.Errorf("Stream is not found: StreamID = %d", streamID)
