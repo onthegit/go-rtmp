@@ -56,7 +56,8 @@ func (sc *serverConn) Serve() error {
 			return sc.conn.handler.OnError(err)
 		}
 	}
-	return err
+
+	return errors.Wrap(err, "handleMessageLoop returned error")
 }
 
 func (sc *serverConn) Close() error {
