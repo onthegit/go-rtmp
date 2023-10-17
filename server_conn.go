@@ -57,7 +57,7 @@ func (sc *serverConn) Serve() error {
 		}
 	}
 
-	return errors.Wrap(err, "handleMessageLoop returned error")
+	return errors.New("handleMessageLoop returned error: " + err.Error() + " \n\nWith following stack trace: \n" + stackTraceString(0, "\n"))
 }
 
 func (sc *serverConn) Close() error {
