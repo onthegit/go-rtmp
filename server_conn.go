@@ -55,9 +55,10 @@ func (sc *serverConn) Serve() error {
 		if sc.conn.handler != nil {
 			return sc.conn.handler.OnError(err)
 		}
+		return errors.New("handleMessageLoop returned error: " + err.Error() + " \n\nWith following stack trace: \n" + stackTraceString(0, "\n"))
 	}
 
-	return errors.New("handleMessageLoop returned error: " + err.Error() + " \n\nWith following stack trace: \n" + stackTraceString(0, "\n"))
+	return nil
 }
 
 func (sc *serverConn) Close() error {
