@@ -52,10 +52,12 @@ func (sc *serverConn) Serve() error {
 	err = sc.conn.handleMessageLoop()
 
 	if err != nil {
+		err = errors.New("handleMessageLoop returned error: " + err.Error() + " \n\nWith following stack trace: \n" + stackTraceString(0, "\n"))
+
 		if sc.conn.handler != nil {
 			return sc.conn.handler.OnError(err)
 		}
-		return errors.New("handleMessageLoop returned error: " + err.Error() + " \n\nWith following stack trace: \n" + stackTraceString(0, "\n"))
+		return errors.New("error occured while processing the data")
 	}
 
 	return nil
